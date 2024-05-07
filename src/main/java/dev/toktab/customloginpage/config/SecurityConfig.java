@@ -1,5 +1,6 @@
 package dev.toktab.customloginpage.config;
 
+import dev.toktab.customloginpage.filter.CookieFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -29,7 +31,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CookieFilter cookieFilter) throws Exception {
         http
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -37,6 +39,7 @@ public class SecurityConfig {
                                 .migrateSession()
                         )
                 )
+                .addFilterBefore(cookieFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form
                         .loginPage("/login.html")
                         .loginProcessingUrl("/custom-login")
@@ -72,4 +75,9 @@ public class SecurityConfig {
                 .build();
         return new InMemoryUserDetailsManager(user);
     }
+    @Bean
+    public CookieFilter cookieFilter() {
+        return new CookieFilter();
+    }
+
 }

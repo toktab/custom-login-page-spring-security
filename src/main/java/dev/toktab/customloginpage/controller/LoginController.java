@@ -38,6 +38,10 @@ public class LoginController {
             cookie.setPath("/");
             response.addCookie(cookie);
 
+            // Set cache control headers
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 0);
             return "redirect:/home";
         } else {
             model.addAttribute("error", true);

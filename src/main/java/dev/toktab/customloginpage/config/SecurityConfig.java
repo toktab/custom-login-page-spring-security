@@ -38,10 +38,10 @@ public class SecurityConfig {
                         )
                 )
                 .formLogin(form -> form
-                        .loginPage("/signin.html")
+                        .loginPage("/login.html")
                         .loginProcessingUrl("/custom-login")
                         .defaultSuccessUrl("/home", true)
-                        .failureUrl("/signin.html?error=true")
+                        .failureUrl("/login.html?error=true")
                 );
         return http.build();
     }

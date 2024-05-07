@@ -20,9 +20,9 @@ public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("/signin")
-    public String signin() {
-        return "signin";
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 
     @PostMapping("/custom-login")
@@ -41,7 +41,7 @@ public class LoginController {
             return "redirect:/home";
         } else {
             model.addAttribute("error", true);
-            return "signin";
+            return "login";
         }
     }
 
@@ -51,6 +51,6 @@ public class LoginController {
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/signin";
+        return "redirect:/login";
     }
 }

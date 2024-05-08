@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
@@ -50,11 +51,23 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
+    public String logoutGet(Model model) {
         return "logout";
+    }
+
+    @PostMapping("/logout")
+    public String logoutPost(@RequestParam("confirm") boolean confirm, HttpServletRequest request, HttpServletResponse response) {
+        if (confirm) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication != null ? authentication.getName() : "";
+            request.getSession().invalidate();
+            Cookie cookie = new Cookie("username", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+            return "redirect:/login";
+        } else {
+            return "redirect:/home";
+        }
     }
 }
